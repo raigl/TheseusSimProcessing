@@ -1,0 +1,52 @@
+How to use the Theseus Simulator
+
+a) Installation
+
+A Java runtime system (version 8) is required in any case.
+
+Either you install the Processing developmen system (https://processing.org/),
+and use the source code "theseus.pde" that uses "Fences.pde" and "Maus.pde".
+
+Or you use the ready-to-go binaries, packed in a zip archive.
+
+b) Usage
+
+See enclosed screen image "Start_Screen.png".
+
+In the middle is the maze, showing the memory contents for each field, i.e. direction
+the mouse left the square last time.
+
+At the right side are usage hints.
+
+At the top, there is a status line indicating pause, explore or goal mode, field changes so far,
+and the turn direction.
+
+At the bottom appears a line if fences are loaded and changed.
+
+To set the mouse position, use the mouse (left click) inside a square,
+
+To set the goal, use a right mouse click inside a square.
+
+To change a fence (barrier), click on it in its middle.
+
+Using the keyboard, other changes can be made:
+
+Space	pause or continue running
+Q	Quit the program (immediately, no warning if fences changed)
++, -	quicker and slower
+G	get a fence configuration saved with the next command
+P	put a fence configuration for later use
+D	change turn from clockwise to counterclockwise and vice versa
+E, W, N, S: rest all squares to the respective direction (and use exploration mode)
+
+Note that Get and Put currently only save the fences, not other settings.
+
+If the mouse encounters a fence in goal mode, it immediately changes to explore mode,
+not turn and an continue, as it should be and will be implemented soon.
+
+In goal mode, after 25 moves the mode is changed to explore mode.
+
+
+
+
+
