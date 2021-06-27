@@ -21,7 +21,7 @@ class Maus {
   // in der Mitte anhalten
   boolean wasFence = false;
   // Drehrichtung
-  boolean clockwise = false;
+  boolean clockwise = true;
 
   // Initialisieren
   Maus() {

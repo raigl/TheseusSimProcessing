@@ -2,6 +2,7 @@
     Simulation for Shannon's Theseus
  */
 
+String VersionString = "Version 0.1b";
 
 class Punkt {
   int x, y;
@@ -22,7 +23,7 @@ String fencesFile = null;
 
 // used by maus and fences
 char north='N', west='W', south='S', east='E';
-char initDir = north;
+char initDir = east;
 
 Maus maus;
 Fences fences;
@@ -234,7 +235,7 @@ void showExitDirs() {
 }
 // Hilfetexte
 void helptexts() {
-  text("Version 0.1", 650, 50);
+  text(VersionString, 650, 50);
   text("Click fence to change", 650, 100);
   text("Click inside to set or turn mouse", 650, 125);
   text("Right click inside to set goal ", 650, 150);
