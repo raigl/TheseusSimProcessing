@@ -195,7 +195,7 @@ class Fences {
     if (x1%raster <= fencewidth && y1%raster <= raster/2) {
       int x2 = x1/raster - 1;
       int y2 = y1/raster - 1;
-      if (x2 > 0 && x2 < 5 && y2 >= 0 && y2 < 5) {
+      if (x2 > 0 && x2 < fencewidth/2 && y2 >= 0 && y2 < fencewidth/2) {
         if (fencesWE[x2][y2] == true)
           fencesWE[x2][y2] = false;
         else
@@ -214,7 +214,7 @@ class Fences {
     if (y1%raster <= fencewidth && x1%raster <= raster/2) {
       int y2 = y1/raster - 1;
       int x2 = x1/raster - 1;
-      if (y2 > 0 && y2 < 5 && x2 >= 0 && x2 < 5) {
+      if (y2 > 0 && y2 < fencewidth/2 && x2 >= 0 && x2 < fencewidth/2) {
         if (fencesNS[x2][y2] == true)
           fencesNS[x2][y2] = false;
         else

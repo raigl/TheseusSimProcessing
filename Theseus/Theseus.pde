@@ -2,7 +2,7 @@
     Simulation for Shannon's Theseus
  */
 
-String VersionString = "Version 0.1b";
+String VersionString = "Version 0.1c";
 
 class Punkt {
   int x, y;
@@ -13,8 +13,8 @@ class Punkt {
 }
 
 int movecount = 0;
-int raster = 100; 
-int fencewidth = 10;
+int raster = 120; 
+int fencewidth = 12;
 int white=#ffffff, black=#000000, red=#ff0000, green=#00ff00, blue=#0000ff, 
     gray=#080808;
 boolean pause = true;
@@ -32,7 +32,7 @@ Punkt goal;
 char[][] exitDir = new char[6][6];
 // Initialisierung
 void setup() {
-  size(1000, 700);
+  size(1200, 900);
   frameRate(30);
 
   // Objekte für die Zäune und die Maus anlegen
@@ -235,15 +235,15 @@ void showExitDirs() {
 }
 // Hilfetexte
 void helptexts() {
-  text(VersionString, 650, 50);
-  text("Click fence to change", 650, 100);
-  text("Click inside to set or turn mouse", 650, 125);
-  text("Right click inside to set goal ", 650, 150);
-  text("Blank = Pause, Q = Quit", 650, 175);
-  text("+ = quicker, - = slower; actual: "+maus.speed, 650, 200);
-  text("G = Get, P = Put fences in/from file", 650, 225);
-  text("D = direction of turn change", 650, 250);
-  text("Initial directions: E(ast), W(est), N(orth), S(outh)", 650, 275);
+  text(VersionString, raster*7, 50);
+  text("Click fence to change", raster*7, 100);
+  text("Click inside to set or turn mouse", raster*7, 125);
+  text("Right click inside to set goal ", raster*7, 150);
+  text("Blank = Pause, Q = Quit", raster*7, 175);
+  text("+ = quicker, - = slower; actual: "+maus.speed, raster*7, 200);
+  text("G = Get, P = Put fences in/from file", raster*7, 225);
+  text("D = direction of turn change", raster*7, 250);
+  text("Initial directions: E(ast), W(est), N(orth), S(outh)", raster*7, 275);
 }
 
 /* 
