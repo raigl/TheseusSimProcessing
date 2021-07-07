@@ -2,7 +2,7 @@
     Simulation for Shannon's Theseus
  */
 
-String VersionString = "Version 0.1c";
+String VersionString = "Version 0.1d";
 
 class Punkt {
   int x, y;
@@ -12,6 +12,7 @@ class Punkt {
   }
 }
 
+int xOffset, yOffset; 
 int movecount = 0;
 int raster = 120; 
 int fencewidth = 12;
@@ -32,7 +33,9 @@ Punkt goal;
 char[][] exitDir = new char[6][6];
 // Initialisierung
 void setup() {
-  size(1200, 900);
+  fullScreen();
+  xOffset = (width-raster*7-200)/2;
+  yOffset = (height-raster*7)/2;
   frameRate(30);
 
   // Objekte für die Zäune und die Maus anlegen
@@ -56,18 +59,18 @@ void showGoal() {
 // je nach Koordinate zum Setzen und Löschen der Zäune oder zum Setzen der Maus
 void mouseClicked() {
   if (mouseButton == LEFT) {
-    if (fences.flip(mouseX, mouseY)) 
+    if (fences.flip(mouseX-xOffset, mouseY-yOffset)) 
       return;
-    if (maus.setXY(mouseX, mouseY)) 
+    if (maus.setXY(mouseX-xOffset, mouseY-yOffset)) 
       pause = true;
       return;
   }
   if (mouseButton == RIGHT) {
-    int x = mouseX/raster;
-    int y = mouseY/raster;
+    int x = (mouseX-xOffset)/raster;
+    int y = (mouseY-yOffset)/raster;
     if (x > 0 && y > 0 && x < 6 && y < 6) {
-      goal.x = mouseX/raster;
-      goal.y = mouseY/raster;
+      goal.x = (mouseX-xOffset)/raster;
+      goal.y = (mouseY-yOffset)/raster;
     }
     return;
   }
@@ -256,27 +259,28 @@ void helptexts() {
 void draw() {
   // Bildschirm aktualisieren
   background(white);
+  translate(xOffset, yOffset);      // applies not on mouse coordinates
   helptexts();
   textSize(14);
-  text(movecount+" moves", 300, 50);
+  text(movecount+" moves", 350, 50);
   if (fencesFile != null) {
     if (fences.changed)
       text("Changed: " + fencesFile, 100, 650);
     else
       text("File: " + fencesFile, 100, 650);
   }
-  if (pause) text("Pause", 100, 50);
+  if (pause) text("Pause", 150, 50);
   if (suchModus) 
-    text("Explore mode ...      ", 150, 50);
+    text("Explore mode ...      ", 200, 50);
   else
-    // text("Goal mode" + fahrZaehler + "  " , 150, 50);
-    text("Goal mode" , 150, 50);
+    // text("Goal mode" + fahrZaehler + "  " , 200, 50);
+    text("Goal mode" , 200, 50);
 
   textSize(28);
   if (maus.clockwise) 
-    text("\u21b7", 450, 50);
+    text("\u21b7", 500, 50);
   else
-    text("\u21B6", 450, 50);  
+    text("\u21B6", 500, 50);  
   textSize(14);
   // Reihenfolge wg. verbergen //<>//
   fences.draw();
