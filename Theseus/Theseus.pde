@@ -2,7 +2,7 @@
     Simulation for Shannon's Theseus
  */
 
-String VersionString = "Version 0.1d";
+String VersionString = "Version 0.1e";
 
 class Punkt {
   int x, y;
@@ -11,7 +11,7 @@ class Punkt {
       y = ya;
   }
 }
-
+PImage startImg, stopImg;
 int xOffset, yOffset; 
 int movecount = 0;
 int raster = 120; 
@@ -38,6 +38,9 @@ void setup() {
   yOffset = (height-raster*7)/2;
   frameRate(30);
 
+  startImg = loadImage("start.png");
+  stopImg = loadImage("stop.png"); 
+
   // Objekte für die Zäune und die Maus anlegen
   fences = new Fences();
   maus = new Maus();
@@ -61,9 +64,12 @@ void mouseClicked() {
   if (mouseButton == LEFT) {
     if (fences.flip(mouseX-xOffset, mouseY-yOffset)) 
       return;
-    if (maus.setXY(mouseX-xOffset, mouseY-yOffset)) 
+    if (maus.setXY(mouseX-xOffset, mouseY-yOffset)) {
       pause = true;
       return;
+    }
+    if ((mouseX-xOffset- raster*7) > 0 && (mouseX-xOffset- raster*7) < 100) 
+      pause = !pause;
   }
   if (mouseButton == RIGHT) {
     int x = (mouseX-xOffset)/raster;
@@ -269,7 +275,12 @@ void draw() {
     else
       text("File: " + fencesFile, 100, 650);
   }
-  if (pause) text("Pause", 150, 50);
+  if (pause) { 
+    text("Pause", 150, 50);
+    image(startImg, raster*7, 400, 100, 100);
+  } else {
+    image(stopImg, raster*7, 400, 100, 100);
+  }
   if (suchModus) 
     text("Explore mode ...      ", 200, 50);
   else
