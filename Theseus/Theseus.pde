@@ -36,7 +36,7 @@ void setup() {
   fullScreen();
   xOffset = (width-raster*7-200)/2;
   yOffset = (height-raster*7)/2;
-  frameRate(30);
+  frameRate(20);
 
   startImg = loadImage("start.png");
   stopImg = loadImage("stop.png"); 
@@ -44,6 +44,7 @@ void setup() {
   // Objekte für die Zäune und die Maus anlegen
   fences = new Fences();
   maus = new Maus();
+  maus.speed = 8;
   goal = new Punkt(5,5);
   for (int i = 1; i < 6; ++i)
     for (int j = 1; j < 6; ++j)
@@ -271,9 +272,9 @@ void draw() {
   text(movecount+" moves", 350, 50);
   if (fencesFile != null) {
     if (fences.changed)
-      text("Changed: " + fencesFile, 100, 650);
+      text("Changed: " + fencesFile, 100, 800);
     else
-      text("File: " + fencesFile, 100, 650);
+      text("File: " + fencesFile, 100, 800);
   }
   if (pause) { 
     text("Pause", 150, 50);
