@@ -54,7 +54,7 @@ boolean setXY(int x, int y) {
   if (x1%raster < raster/2 && y1%raster < raster/2) {
     x1 = x - x%raster + raster/2;
     y1 = y - y%raster + raster/2;
-    if (x1 < 100 || x1 > 600 || y1 < 100 || y1 > 600)
+    if (x1 < raster || x1 > 6*raster || y1 < raster || y1 > 6*raster) 
       return false;
     println(y1);
     if (pixX == x1 && pixY == y1) 

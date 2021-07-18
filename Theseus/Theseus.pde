@@ -2,8 +2,8 @@
     Simulation for Shannon's Theseus
  */
 
-String VersionString = "Version 0.1e";
-
+String VersionString = "Version 1.0a";
+boolean showButtons = false;
 class Punkt {
   int x, y;
   Punkt(int xa, int ya) {
@@ -14,6 +14,7 @@ class Punkt {
 PImage startImg, stopImg;
 int xOffset, yOffset; 
 int movecount = 0;
+int fieldcount = 0;
 int raster = 120; 
 int fencewidth = 12;
 int white=#ffffff, black=#000000, red=#ff0000, green=#00ff00, blue=#0000ff, 
@@ -21,6 +22,7 @@ int white=#ffffff, black=#000000, red=#ff0000, green=#00ff00, blue=#0000ff,
 boolean pause = true;
 boolean dialogBusy = false;
 String fencesFile = null;
+Punkt aktFeld = new Punkt(1,1);
 
 // used by maus and fences
 char north='N', west='W', south='S', east='E';
@@ -67,6 +69,12 @@ void mouseClicked() {
       return;
     if (maus.setXY(mouseX-xOffset, mouseY-yOffset)) {
       pause = true;
+      Punkt xy = maus.whereis();
+      maus.mausDir = exitDir[xy.x][xy.y];
+      maus.show();
+      movecount = 0;
+      fieldcount = 0;
+      aktFeld = xy;
       return;
     }
     if ((mouseX-xOffset- raster*7) > 0 && (mouseX-xOffset- raster*7) < 100) 
@@ -94,7 +102,7 @@ void keyPressed() {
     if (pause) pause = false;
     else pause = true;
   }
-  movecount = 0;
+
   // Drehrichtung / turn direction
   if (key == 'd' || key == 'D') {
     if (maus.clockwise) maus.clockwise = false;
@@ -166,63 +174,62 @@ void fileSelected(File selection) {
 boolean suchModus = true;
 boolean skipEntry = true;
 char mouseDir = east;
-Punkt aktFeld = new Punkt(1,1);
 char lastMouseEntry = east;
-int fahrZaehler = 0;
 
 void strategie() { 
   // warte, bis Mausbewegung abgeschlossen
   if (maus.busy) return;
-  ++movecount;
+  
+
+  Punkt xy = maus.whereis();
+
+  // Ziel erreicht?
+  if (maus.trifftZiel()) {
+      if (suchModus)
+        suchModus = false;
+      pause = true;
+      return;
+    }
 
   // wenn am Zaun, umdrehen und zurück auf Feldmitte
   if (maus.stopcode == 1) {
-    suchModus = true;
-    maus.mausDir = maus.drehe(maus.drehe(maus.mausDir));
-    maus.bewege(0, maus.mausDir);
+    maus.bewege(0, maus.drehe(maus.drehe(maus.mausDir)));
+    if (suchModus) 
+       return;
+    // Zaunberührung im Zielmodus: drehen
+    exitDir[xy.x][xy.y] = maus.drehe(exitDir[xy.x][xy.y]);
     return;
+  }
+  ++movecount;
+  if (!suchModus && fieldcount > 23)
+    suchModus = true;
+
+  // Eingangrichtung merken
+  if (xy.x != aktFeld.x || xy.y != aktFeld.y) {
+    lastMouseEntry = maus.drehe(maus.drehe(mouseDir));
+    // println(lastMouseEntry);
+    aktFeld = xy;
+    skipEntry = true;
+    fieldcount++;
   }
   
-
-  // Suchmodus: 
-  Punkt xy = maus.whereis();
-  if (suchModus) {
-    // Ziel erreicht?
-    if (maus.trifftZiel()) {
-      suchModus = false;
-      fahrZaehler = 0;
-      return;
-    }
-    if (xy.x != aktFeld.x || xy.y != aktFeld.y) {
-      lastMouseEntry = maus.drehe(maus.drehe(mouseDir));
-      // println(lastMouseEntry);
-      aktFeld = xy;
-      skipEntry = true;
-    }
+  // Suchmodus: bei Eintritt drehen
+  if (suchModus) 
     mouseDir = maus.drehe(exitDir[xy.x][xy.y]);
-    // println("last=" + lastMouseEntry + " new=" + mouseDir);
-    if (lastMouseEntry == mouseDir && skipEntry == true) {
-      mouseDir = maus.drehe(mouseDir);
-      skipEntry = false;
-    }
-    exitDir[xy.x][xy.y] = mouseDir;
-    maus.bewege(1, mouseDir);
-    return;
+  else
+    mouseDir = exitDir[xy.x][xy.y];
+    
+  // println("last=" + lastMouseEntry + " new=" + mouseDir);
+  
+  // Zunächst nicht über den Eingang wieder verlassen
+  if (lastMouseEntry == mouseDir && skipEntry == true) {
+    mouseDir = maus.drehe(mouseDir);
+    skipEntry = false;
   }
-  // Fahrmodus
-  // Ziel erreicht?
-  if (maus.trifftZiel()) {
-      pause = true;
-      fahrZaehler = 0;
-      return;
-    }
-  if (fahrZaehler > 25) {
-    suchModus = true;
-    return;
-  }
-  fahrZaehler += 1;
-  println(fahrZaehler);
-  maus.bewege(1, exitDir[xy.x][xy.y]);
+  
+  exitDir[xy.x][xy.y] = mouseDir;
+  maus.bewege(1, mouseDir);
+
 }
 
 void showExitDirs() {
@@ -269,23 +276,26 @@ void draw() {
   translate(xOffset, yOffset);      // applies not on mouse coordinates
   helptexts();
   textSize(14);
-  text(movecount+" moves", 350, 50);
+  text(movecount+" moves " + fieldcount+" fields", 350, 50);
   if (fencesFile != null) {
     if (fences.changed)
       text("Changed: " + fencesFile, 100, 800);
     else
       text("File: " + fencesFile, 100, 800);
   }
-  if (pause) { 
-    text("Pause", 150, 50);
-    image(startImg, raster*7, 400, 100, 100);
-  } else {
-    image(stopImg, raster*7, 400, 100, 100);
+
+  if (showButtons) {
+    if (pause) { 
+      text("Pause", 150, 50);
+      image(startImg, raster*7, 400, 100, 100);
+    } else {
+      image(stopImg, raster*7, 400, 100, 100);
+    }
   }
+  
   if (suchModus) 
     text("Explore mode ...      ", 200, 50);
   else
-    // text("Goal mode" + fahrZaehler + "  " , 200, 50);
     text("Goal mode" , 200, 50);
 
   textSize(28);
